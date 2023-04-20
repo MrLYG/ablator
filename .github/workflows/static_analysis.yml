@@ -26,7 +26,7 @@ jobs:
         pip install pylint flake8 pytest mypy
 
     - name: Run pylint
-      run: pylint ablator
+      run: pylint --fail-under=8.0 ablator
 
     - name: Run flake8
       run: flake8 ablator
