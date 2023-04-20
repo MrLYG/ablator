@@ -1,0 +1,38 @@
+name: Python CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10','3.11', '3.12']  # Add more versions if needed
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint flake8 pytest mypy
+
+    - name: Run pylint
+      run: pylint ablator
+
+    - name: Run flake8
+      run: flake8 ablator
+
+    - name: Run pytest
+      run: pytest
+
+    - name: Run mypy
+      run: mypy ablator
