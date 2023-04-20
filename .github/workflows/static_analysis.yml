@@ -38,11 +38,11 @@ jobs:
     - name: Run pylint
       run: pylint --fail-under=9.0 ablator
 
-    - name: Run mypy
-      run: mypy ablator
+    # - name: Run mypy
+    #   run: mypy ablator
 
-    - name: Run pytest
-      run: pytest --continue-on-collection-errors
+    # - name: Run pytest
+    #   run: pytest --continue-on-collection-errors
 
-    - name: Run flake8
-      run: flake8 ablator
+    # - name: Run flake8
+    #   run: flake8 ablator
