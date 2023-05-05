@@ -10,7 +10,7 @@ from ablator.config.main import ConfigBase, configclass
 from ablator.config.types import Optional
 
 
-def run_cmd_wait(cmd, timeout=300, raise_errors=False) -> None | str:
+def run_cmd_wait(cmd, timeout=300, raise_errors=False) -> Optional[str]:
     # timeout is in seconds
     output = None
     with subprocess.Popen(
