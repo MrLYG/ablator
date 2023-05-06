@@ -9,7 +9,7 @@ from ablator.config.types import Literal
 
 Scheduler = ty.Union[_LRScheduler, ReduceLROnPlateau, ty.Any]
 
-StepType = Literal["train", "val", "epoch"]
+StepType = ty.Literal["train", "val", "epoch"]
 
 
 @configclass
