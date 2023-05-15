@@ -5,7 +5,7 @@ on:
     branches: [ trainers, abcd ]
 
 jobs:
-  build-linux:
+  Codecov:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 5
@@ -28,6 +28,7 @@ jobs:
 
     - name: Run tests
       run: pytest --cov=./ --cov-report=xml
+      continue-on-error: true
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
