@@ -1,4 +1,4 @@
-comment:                  # this is a top-level key "reach, diff, flags, files"
+comment:                  # this is a top-level key 
   layout: "reach, flags, files"
   behavior: new
   require_changes: false  # if true: only post the comment if coverage changes
