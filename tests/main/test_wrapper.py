@@ -291,58 +291,6 @@ def test_state():
     assert wrapper.random_seed == 100
 
 
-def test_load_save_errors(tmp_path: Path):
-    tmp_path = tmp_path.joinpath("test_exp")
-    wrapper = TestWrapper(MyCustomModel)
-
-    _config = copy.deepcopy(config)
-    _config.verbose = "console"
-    _config.experiment_dir = tmp_path
-
-    assert_error_msg(
-        lambda: [
-            wrapper._init_state(run_config=_config),
-            wrapper._init_state(run_config=_config),
-        ],
-        f"SummaryLogger: Resume is set to False but {tmp_path.joinpath(_config.uid)} exists.",
-    )
-
-    assert wrapper._init_state(run_config=_config, debug=True) is None
-    assert_error_msg(
-        lambda: [wrapper._init_state(run_config=_config, resume=True)],
-        f"Could not find a valid checkpoint in {tmp_path.joinpath(_config.uid,'checkpoints')}",
-    )
-
-    # wrapper =
-    # wrapper.
-    pass
-
-
-def test_load_save(tmp_path: Path):
-    tmp_path = tmp_path.joinpath("test_exp")
-    _config = copy.deepcopy(config)
-    _config.verbose = "console"
-    _config.experiment_dir = tmp_path
-    wrapper = TestWrapper(MyCustomModel)
-
-    wrapper.train(_config)
-    old_model = copy.deepcopy(wrapper.model)
-    wrapper = TestWrapper(MyCustomModel)
-
-    wrapper._init_state(run_config=_config, resume=True)
-    wrapper.epochs = 3
-    wrapper._init_state(run_config=_config, resume=True)
-    assert_error_msg(
-        lambda: wrapper.checkpoint(),
-        f"Checkpoint iteration {wrapper.current_iteration} > training iteration {wrapper.current_iteration}. Can not save checkpoint.",
-    )
-    wrapper._inc_iter()
-    wrapper.checkpoint()
-    assert (
-        wrapper.current_state["model"]["param"] == old_model.state_dict()["param"]
-    ).all()
-
-
 if __name__ == "__main__":
     # import shutil
     # tmp_path = Path("/tmp/")

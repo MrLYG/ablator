@@ -2,7 +2,7 @@ name:  Codecov CI
 
 on:
   pull_request:
-    branches: [ trainers, abcd ]
+    branches: [ trainers, abcd, ken_test_codecov ]
 
 jobs:
   Codecov:
