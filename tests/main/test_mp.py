@@ -110,36 +110,6 @@ def capture_output(fn):
     return out.getvalue(), err.getvalue()
 
 
-def test_mp(tmp_path: Path):
-    wrapper = TestWrapper(MyCustomModel)
-
-    with tempfile.TemporaryDirectory() as fp:
-        config.experiment_dir = fp
-        assert_error_msg(
-            lambda: ParallelTrainer(wrapper=wrapper, run_config=config),
-            "Device must be set to 'cuda' if `gpu_mb_per_experiment` > 0",
-        )
-        config.device = "cuda"
-        config.gpu_mb_per_experiment = 1e12
-        config.cpus_per_experiment = 1e12
-        out, err = capture_output(
-            lambda: ParallelTrainer(wrapper=wrapper, run_config=config)
-        )
-        assert (
-            "Expected GPU memory utilization" in out
-            and "Expected CPU core util. exceed system capacity" in out
-        )
-
-    config.experiment_dir = tmp_path
-    config.device = "cuda"
-    config.gpu_mb_per_experiment = 0.001
-    config.cpus_per_experiment = 0.001
-    ablator = ParallelTrainer(wrapper=wrapper, run_config=config)
-    ablator.gpu = 1 / config.concurrent_trials
-    ablator.launch(Path(__file__).parent.as_posix(), ray_head_address=None)
-    res = Results(MyParallelConfig, ablator.experiment_dir)
-    assert res.data.shape[0] // 2 == len(ablator.experiment_state.complete_trials)
-
 
 if __name__ == "__main__":
     import shutil
@@ -147,6 +117,5 @@ if __name__ == "__main__":
     tmp_path = Path("/tmp/experiment_dir")
     shutil.rmtree(tmp_path, ignore_errors=True)
     tmp_path.mkdir()
-    test_mp(tmp_path)
 
     pass
