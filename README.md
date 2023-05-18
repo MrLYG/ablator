@@ -1,5 +1,5 @@
 # ABLATOR
-
+[![codecov](https://codecov.io/gh/fostiropoulos/ablator/branch/abcd/graph/badge.svg?token=LUGKC1R8CG)](https://codecov.io/gh/fostiropoulos/ablator)
 <img src="assets/ablator_architecture.png">
 A distributed experiment execution framework for ablation studies. ABLATOR provides a wrapper for your model and a Trainer class for you to prototype on your method and scale to thousands of experimental trials with 1 code change.
 
