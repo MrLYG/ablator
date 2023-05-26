@@ -132,6 +132,7 @@ def test_summary_logger(tmp_path: Path):
     event_acc = EventAccumulator(
         tmp_path.joinpath("dashboard", "tensorboard").as_posix()
     )
+    print(tmp_path)
     event_acc.Reload()
     tags = event_acc.Tags()["scalars"]
     assert len(tags) == 0

@@ -1,5 +1,6 @@
 import copy
 import json
+import os
 from pathlib import Path
 from typing import Optional, Union
 
@@ -255,9 +256,22 @@ class SummaryLogger:
         metrics : dict[str, float]
             The metrics to append.
         """
-        if self.result_json_path is not None:
-            with open(self.result_json_path, "a", encoding="utf-8") as fp:
-                fp.write(futils.dict_to_json(metrics) + "\n")
+        # if self.result_json_path is not None:
+        #     with open(self.result_json_path, "a", encoding="utf-8") as fp:
+        #         fp.write(futils.dict_to_json(metrics) + "\n")
+        if self.result_json_path is None:
+            return
+
+        if os.path.isfile(self.result_json_path) and os.stat(self.result_json_path).st_size != 0:
+            with open(self.result_json_path, "r", encoding="utf-8") as fp:
+                data = json.load(fp)
+        else:
+            data = {"results": []}
+
+        with open(self.result_json_path, "w", encoding="utf-8") as fp:
+            data["results"].append(futils.dict_to_json(metrics))
+            json.dump(data, fp)
+
 
     def update(
         self,
