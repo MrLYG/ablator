@@ -6,10 +6,9 @@ on:
 
 jobs:
   pylint:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ['3.10']
     steps:
     - name: Checkout repository
@@ -34,10 +33,9 @@ jobs:
       run: pylint --fail-under=9 ablator
 
   mypy:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ['3.10']
     steps:
     - name: Checkout repository
@@ -61,11 +59,10 @@ jobs:
       run: mypy ablator
 
   flake8:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.10']
+      max-parallel: 5
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
