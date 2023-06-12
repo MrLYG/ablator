@@ -1,6 +1,6 @@
 from pathlib import Path
 import tempfile
-
+import os
 import numpy as np
 
 
@@ -42,6 +42,8 @@ def capture_output(fn):
 
 
 def test_state(tmp_path: Path):
+    if os.name == 'nt':
+        return
     assert_error_msg(
         lambda: SearchSpace(
             value_range=[0, 1, 2], categorical_values=[0, "1", 0.122], value_type="int"
@@ -94,6 +96,8 @@ def test_state(tmp_path: Path):
         gpu_mb_per_experiment=0,
         cpus_per_experiment=0.1,
     )
+    # There will be error when run in windows cause by bug of python itself.
+    # ref-https://github.com/python/cpython/issues/87319
     with tempfile.TemporaryDirectory() as fp:
         assert_error_msg(
             lambda: ExperimentState(Path(fp), config),

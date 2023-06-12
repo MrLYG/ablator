@@ -8,7 +8,7 @@ jobs:
   pytest:
     runs-on: macos-latest
     strategy:
-      max-parallel: 5
+      max-parallel: 3
 
     steps:
       - uses: actions/checkout@v3
