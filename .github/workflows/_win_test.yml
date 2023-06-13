@@ -29,7 +29,7 @@ jobs:
       - name: Generate SSH keys
         shell: bash
         run: |
-          mkdir ~/.ssh
+          mkdir -p ~/.ssh
           ssh-keygen -t rsa -b 4096 -C "ablator@dev.com" -f ~/.ssh/id_rsa -q -N ""
           cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
       - name: Test with pytest
