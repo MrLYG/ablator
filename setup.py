@@ -2,8 +2,7 @@ from setuptools import setup, find_packages
 from pathlib import Path
 import subprocess
 from setuptools import setup, find_packages
-
-# Call the Python script
+import sys
 
 
 def install_rclone():
