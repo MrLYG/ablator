@@ -1,16 +1,19 @@
 from setuptools import setup, find_packages
 from pathlib import Path
 import subprocess
-from setuptools import setup, find_packages
 import sys
+from setuptools.command.install import install
+
+# def install_rclone():
+#     subprocess.run([sys.executable, "-m", "pip", "install", "requests"], check=True)
+#     subprocess.run([sys.executable, "./scripts/install_rclone.py"], check=True)
 
 
-def install_rclone():
-    subprocess.run([sys.executable, "-m", "pip", "install", "requests"], check=True)
-    subprocess.run([sys.executable, "./scripts/install_rclone.py"], check=True)
+class PostInstallCommand(install):
+    def run(self):
+        install.run(self)
+        subprocess.run([sys.executable, "./scripts/install_rclone.py"], check=True)
 
-
-install_rclone()
 
 setup(
     name="ablator",
@@ -41,6 +44,7 @@ setup(
         "tabulate==0.9.0",
         "seaborn==0.12.2",
         "numpydoc==1.5.0",
+        "requests",
     ],
     extras_require={
         "dev": [
@@ -51,5 +55,8 @@ setup(
             "pylint==2.17.2",
             "tensorboard==2.12.2",
         ],
+    },
+    cmdclass={
+        'install': PostInstallCommand,
     },
 )
