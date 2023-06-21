@@ -62,7 +62,7 @@ def create_rclone_gcs_config(remote_name, project_number, service_account_file):
     with open(rclone_conf_path, 'w') as f:
         f.write(config_str)
 
-
+@pytest.mark.skip(reason="Cannot run this test on github actions, Because share creadential file is not safe")
 def test_rclone_sync_to_gcs(tmp_path: Path):
     # Create a rclone config file
     remote_name = 'gcs'
