@@ -41,7 +41,7 @@ setup(
         "tabulate==0.9.0",
         "seaborn==0.12.2",
         "numpydoc==1.5.0",
-        "requests",
+        "requests>=2.31.0",
     ],
     extras_require={
         "dev": [
