@@ -8,7 +8,7 @@ from setuptools.command.install import install
 class PostInstallCommand(install):
     def run(self):
         install.run(self)  # type: ignore
-        subprocess.run(["python", "./scripts/install_rclone.py"], check=True)
+        subprocess.run([sys.executable, "./scripts/install_rclone.py"], check=True)
 
 
 package_path = __file__
