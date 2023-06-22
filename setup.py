@@ -8,6 +8,7 @@ from setuptools.command.install import install
 class PostInstallCommand(install):
     def run(self):
         install.run(self)  # type: ignore
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
         subprocess.run([sys.executable, "./scripts/install_rclone.py"], check=True)
 
 
@@ -40,8 +41,7 @@ setup(
         "optuna==3.1.1",
         "tabulate==0.9.0",
         "seaborn==0.12.2",
-        "numpydoc==1.5.0",
-        "requests>=2.31.0",
+        "numpydoc==1.5.0"
     ],
     extras_require={
         "dev": [
