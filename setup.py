@@ -10,7 +10,8 @@ class PostInstallCommand(install):
     def run(self):
         install.run(self)  # type: ignore
         current_dir = os.path.dirname(os.path.realpath(__file__))
-        script_path = os.path.join(current_dir, "/scripts/install_rclone.py")
+        print("current_dir", current_dir)
+        script_path = os.path.join(current_dir, "scripts", "install_rclone.py")
         subprocess.run([sys.executable, script_path], check=True)
 
 
