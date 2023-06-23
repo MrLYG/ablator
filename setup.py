@@ -13,7 +13,7 @@ class PostInstallCommand(install):
 
 package_path = __file__
 setup(
-    name="ablator",
+    name="ablator_ken_test",
     version="0.0.1b2",
     author="Iordanis Fostiropoulos",
     author_email="dev@iordanis.xyz",
