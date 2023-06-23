@@ -51,8 +51,5 @@ setup(
             "pylint==2.17.2",
             "tensorboard==2.12.2",
         ],
-    },
-    cmdclass={
-        'install': PostInstallCommand,
-    },
+    }
 )
