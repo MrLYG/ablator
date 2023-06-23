@@ -20,8 +20,11 @@ def get_system_architecture():
     machine = platform.machine()
 
     if system == "windows":
-        arch = "amd64" if machine == "AMD64" else "386"
-    elif system in ["darwin", "linux"]:
+        arch = "amd64" if machine in ["AMD64"] else "386"
+    elif system == "darwin":
+        system = "osx"
+        arch = "amd64" if machine in ["x86_64", "amd64"] else "386"
+    elif system == "linux":
         arch = "amd64" if machine in ["x86_64", "amd64"] else "386"
     else:
         logging.error("Unsupported OS type")
