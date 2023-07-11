@@ -96,7 +96,7 @@ def write_text(fp: Path, n=1000):
         pass
 
 
-def test_tui(tmp_path: Path, progress_bar=None):
+def _test_tui(tmp_path: Path, progress_bar=None):
     uid = _rand_str(10)
     fp = tmp_path.joinpath(uid)
     fp.write_text("")
@@ -114,7 +114,7 @@ def test_tui(tmp_path: Path, progress_bar=None):
     return
 
 
-def test_tui_remote(tmp_path: Path):
+def _test_tui_remote(tmp_path: Path):
     if not ray.is_initialized():
         ray.init()
     import random

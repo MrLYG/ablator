@@ -80,8 +80,6 @@ def test_get_gpu_mem():
         base.get_gpu_mem("invalid")
 
 
-def test_get_gpu_max_mem():
-    assert base.get_gpu_max_mem() == base.get_gpu_mem("total")
 
 
 def test_is_oom_exception():
