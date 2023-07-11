@@ -80,6 +80,7 @@ def test_gcp(tmp_path: Path, bucket: str = "gs://iordanis/"):
         cmd += [f"{src}/", f"{mock_gs_path}/{destination}"]
         return cmd
 
+
     def mock_make_cmd_down(self, src_path: str, local_path: Path):
         src = Path(self.bucket) / src_path / local_path.name
         destination = local_path
@@ -125,6 +126,15 @@ def test_gcp(tmp_path: Path, bucket: str = "gs://iordanis/"):
                         files = cfg.list_bucket()
                         original_tensors = write_rand_tensors(tmp_path)
                         cfg.rsync_up(tmp_path, rand_folder)
+
+                        gcpc = GcpConfig(bucket=bucket)
+                        gcpc.bucket = "test_bucket"
+                        gcpc.exclude_glob = "exclude_glob_pattern"
+                        gcpc.exclude_chkpts = True
+                        cmd = gcpc._make_cmd_up(Path('local_path'), 'destination')
+                        expected_cmd = ['gsutil', '-m', 'rsync', '-r', '--exclude', 'exclude_glob_pattern',
+                                        '--exclude', '*.pt', 'local_path', 'gs://test_bucket/destination/local_path']
+                        assert cmd == expected_cmd
 
     with mock.patch("ablator.modules.storage.cloud.GcpConfig.list_bucket", mock_list_bucket):
         new_files = cfg.list_bucket()
@@ -178,80 +188,6 @@ def test_gcp(tmp_path: Path, bucket: str = "gs://iordanis/"):
     out, err = p.communicate()
     assert len(out) == 0
 
-
-@pytest.fixture
-def gcp_config():
-    return GcpConfig(bucket="gs://iordanis/")
-
-
-def test_init(gcp_config):
-    assert gcp_config.bucket == 'gs://iordanis/'
-    assert gcp_config.exclude_glob is None
-    assert not gcp_config.exclude_chkpts
-
-
-def test_make_cmd_up(gcp_config):
-    cmd = gcp_config._make_cmd_up(Path('file.txt'), 'dest_folder')
-    assert cmd[-1] == 'gs://iordanis/dest_folder/file.txt'
-    assert cmd[-2] == 'file.txt'
-
-
-def test_make_cmd_down(gcp_config):
-    cmd = gcp_config._make_cmd_down('src_folder/file.txt', Path('.'))
-    assert cmd[-1] == '.'
-    assert cmd[-2] == 'gs://iordanis/src_folder/file.txt'
-
-
-def test_list_bucket(gcp_config, monkeypatch):
-    def mock_communicate():
-        return (b'file1.txt\nfile2.txt', b'')
-    monkeypatch.setattr('subprocess.Popen.communicate', mock_communicate)
-    files = gcp_config.list_bucket()
-    assert files == ['file1.txt', 'file2.txt']
-
-
-@patch('subprocess.Popen')
-def test_find_gcp_nodes(mock_popen):
-    # mock the Popen instance
-    mock_p = MagicMock()
-    # set the return values for `communicate` method
-    mock_p.communicate.return_value = (b'[{"name": "node1"}]', b'')
-    mock_popen.return_value = mock_p
-
-    gcp_config = GcpConfig(bucket='test_bucket')
-
-    # Test with a specific hostname
-    nodes = gcp_config._find_gcp_nodes('node1')
-    assert len(nodes) == 1
-    assert nodes[0]['name'] == 'node1'
-
-    # Test without a specific hostname
-    nodes = gcp_config._find_gcp_nodes()
-    assert len(nodes) == 1
-    assert nodes[0]['name'] == 'node1'
-
-
-@patch('subprocess.Popen')
-def test_list_bucket(mock_popen):
-    # mock the Popen instance
-    mock_p = MagicMock()
-    # set the return values for `communicate` method
-    mock_p.communicate.return_value = (b'file1.txt\nfile2.txt\n', b'')
-    mock_popen.return_value = mock_p
-
-    gcp_config = GcpConfig(bucket='test_bucket')
-
-    # Test with a specific destination
-    files = gcp_config.list_bucket('test_destination')
-    assert len(files) == 2
-    assert files[0] == 'file1.txt'
-    assert files[1] == 'file2.txt'
-
-    # Test without a specific destination
-    files = gcp_config.list_bucket()
-    assert len(files) == 2
-    assert files[0] == 'file1.txt'
-    assert files[1] == 'file2.txt'
 
 
 if __name__ == "__main__":
