@@ -127,7 +127,7 @@ def test_gcp(tmp_path: Path, bucket: str = "gs://iordanis/"):
                         original_tensors = write_rand_tensors(tmp_path)
                         cfg.rsync_up(tmp_path, rand_folder)
 
-                        gcpc = cfg
+                        gcpc = GcpConfig(bucket=bucket+f"{torch.rand(1).item()}")
                         gcpc.bucket = "test_bucket"
                         gcpc.exclude_glob = "exclude_glob_pattern"
                         gcpc.exclude_chkpts = True
@@ -136,6 +136,10 @@ def test_gcp(tmp_path: Path, bucket: str = "gs://iordanis/"):
                                         '--exclude', '*.pt', 'local_path', 'gs://test_bucket/destination/local_path']
                         assert cmd == expected_cmd
 
+                        gcpc = GcpConfig(bucket=bucket+f"{torch.rand(1).item()}")
+                        gcpc.bucket = "test_bucket"
+                        gcpc.exclude_glob = "exclude_glob_pattern"
+                        gcpc.exclude_chkpts = True
                         cmd = gcpc._make_cmd_down('src_path', Path('local_path'))
                         expected_cmd = ['gsutil', '-m', 'rsync', '-r', 'gs://test_bucket/src_path/local_path', 'local_path']
                         assert cmd == expected_cmd
