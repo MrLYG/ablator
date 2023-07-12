@@ -265,6 +265,10 @@ def test_add_scalar_with_none_value(tmp_path: Path):
     dashboard.add_scalar('test_scalar', None, 1)
     pass
 
+def test_sync(tmp_path: Path):
+    dashboard = TensorboardLogger(tmp_path.joinpath("tensorboard"))
+    dashboard._sync()
+    pass
 
 if __name__ == "__main__":
     test_results_json(Path("/tmp/"))

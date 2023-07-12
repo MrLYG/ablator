@@ -1,0 +1,6 @@
+[run]
+omit =
+    ablator/modules/storage/*
+    ablator/utils/progress_bar.py
+    #D:/codesoftware/python3109/lib/site-packages/ablator/modules/storage/*
+    #D:\CodeSoftware\python3109\Lib\site-packages\ablator\utils\progress_bar.py
