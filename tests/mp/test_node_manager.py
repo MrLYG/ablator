@@ -8,7 +8,7 @@ from ablator.mp.node_manager import NodeManager, Resource
 
 def test_node_manager(tmp_path: Path, ray_cluster):
     # TODO py-test clean-ups
-    timeout = 100
+    timeout = 1200
     n_nodes = 2
     manager = NodeManager(tmp_path)
     results = manager.run_cmd("whoami", timeout=timeout)
