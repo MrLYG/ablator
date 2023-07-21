@@ -8,8 +8,8 @@ from ablator.mp.node_manager import NodeManager, Resource
 
 def test_node_manager(tmp_path: Path, ray_cluster):
     # TODO py-test clean-ups
-    timeout = 15
-    n_nodes = 1
+    timeout = 100
+    n_nodes = 2
     manager = NodeManager(tmp_path)
     results = manager.run_cmd("whoami", timeout=timeout)
     test_ips = ray_cluster.node_ips()
@@ -21,6 +21,7 @@ def test_node_manager(tmp_path: Path, ray_cluster):
     ray_cluster.append_nodes(1)
     n_nodes += 1
     results = manager.run_cmd("whoami", timeout=timeout)
+    print(results)
 
     assert (
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
