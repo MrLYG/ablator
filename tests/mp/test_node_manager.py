@@ -33,6 +33,16 @@ def test_node_manager(tmp_path: Path, ray_cluster):
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
     )  # +1 for the head node
 
+    assert (
+        len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
+    )  # +1 for the head node
+    ray_cluster.kill_node(0)
+    n_nodes -= 1
+    results = manager.run_cmd("whoami", timeout=timeout)
+    assert (
+        len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
+    )  # +1 for the head node
+
     ray_cluster.append_nodes(1)
     n_nodes += 1
     results = manager.run_cmd("whoami", timeout=timeout)
@@ -41,7 +51,6 @@ def test_node_manager(tmp_path: Path, ray_cluster):
     assert (
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
     )  # +1 for the head node
-
 
     ray_cluster.kill_all()
 
