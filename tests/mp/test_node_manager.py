@@ -18,9 +18,9 @@ def test_node_manager(tmp_path: Path, ray_cluster):
         test_ips.remove(node_ip)
         assert result.strip() == node_username
     assert len(test_ips) == 0
-    ray_cluster.append_nodes(1)
-    n_nodes += 1
+
     results = manager.run_cmd("whoami", timeout=timeout)
+    # reultes {node_ip: node_username, ...}
     print(results)
 
     assert (
@@ -32,6 +32,17 @@ def test_node_manager(tmp_path: Path, ray_cluster):
     assert (
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
     )  # +1 for the head node
+
+    ray_cluster.append_nodes(1)
+    n_nodes += 1
+    results = manager.run_cmd("whoami", timeout=timeout)
+    # reultes {node_ip: node_username, ...}
+    print(results)
+    assert (
+        len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
+    )  # +1 for the head node
+
+
     ray_cluster.kill_all()
 
     results = manager.run_cmd("whoami", timeout=timeout)
@@ -44,7 +55,6 @@ def test_node_manager(tmp_path: Path, ray_cluster):
         assert "Ray has not been started yet." in str(e)
 
     # NOTE test restarting ray and NodeManager
-
     ray_cluster = type(ray_cluster)(nodes=0)
     ray_cluster.setUp(Path(__file__).parent)
     manager = NodeManager(tmp_path, ray_address=ray_cluster.cluster_ip)
