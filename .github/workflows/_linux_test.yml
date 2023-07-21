@@ -45,7 +45,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest || true
-    - name: Run Docker
-      run: |
-        docker ps -a
+        pytest
