@@ -49,10 +49,10 @@ def test_node_manager(tmp_path: Path, ray_cluster):
         while True:
             results = manager.run_cmd("whoami", timeout=timeout)
             if time.time() - start_time > max_wait_time:
-                raise RuntimeError(f"Timed out waiting for {tag} to appear in TensorBoard.")
+                raise RuntimeError("Timed out waiting for append nodes.")
             if output_fn:
                 print(results)
-            if len(results) > num + 1:
+            if len(results) > num:
                 break
             time.sleep(0.1)
 
