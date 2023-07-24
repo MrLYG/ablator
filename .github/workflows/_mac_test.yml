@@ -32,6 +32,8 @@ jobs:
         run: |
           brew install docker
           colima start --cpu 1 --memory 6 --disk 20
+      - name: Set DOCKER_HOST environment variable
+        run: echo "DOCKER_HOST=$(colima env | grep DOCKER_HOST | cut -d= -f2)" >> $GITHUB_ENV
       - name: Build Docker Image
         run: |
           docker build --build-arg="PY_VERSION=3.10" --tag ablator .
