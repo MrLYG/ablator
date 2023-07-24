@@ -6,7 +6,7 @@ import ray
 from ablator.mp.node_manager import NodeManager, Resource
 
 
-@pytest.mark.skipif(sys.platform != 'linux', reason="CI doesn't support MacOS and Windows")
+# @pytest.mark.skipif(sys.platform != 'linux', reason="CI doesn't support MacOS and Windows")
 def test_node_manager(tmp_path: Path, ray_cluster):
     # TODO py-test clean-ups
     timeout = 1200
