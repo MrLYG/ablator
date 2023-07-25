@@ -23,6 +23,7 @@ def test_node_manager(tmp_path: Path, ray_cluster):
 
     results = manager.run_cmd("whoami", timeout=timeout)
 
+
     assert (
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
     )  # +1 for the head node
@@ -51,14 +52,27 @@ def test_node_manager(tmp_path: Path, ray_cluster):
                 raise RuntimeError("Timed out waiting for append nodes.")
             if output_fn:
                 print(results)
-                print(ray_cluster.node_ips())
             if len(results) > num:
-                return results
+                break
+            time.sleep(0.1)
+
+    def wait_for_kill_nodes(num, max_wait_time=50, output_fn=True):
+        start_time = time.time()
+        while True:
+            node_ips = ray_cluster.node_ips()
+            if time.time() - start_time > max_wait_time:
+                raise RuntimeError("Timed out deleting for nodes.")
+            if output_fn:
+                print(node_ips)
+            if len(results) == num:
+                break
             time.sleep(0.1)
 
     ray_cluster.append_nodes(1)
-    results = wait_for_append_nodes(1)
+    wait_for_append_nodes(1)
+    wait_for_kill_nodes(2)
     n_nodes += 1
+    results = manager.run_cmd("whoami", timeout=timeout)
     # reultes {node_ip: node_username, ...}
     assert (
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
