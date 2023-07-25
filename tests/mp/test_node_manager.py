@@ -1,11 +1,13 @@
 import shutil
 from pathlib import Path
-import unittest
-
+import time
+import sys
+import pytest
 import ray
 from ablator.mp.node_manager import NodeManager, Resource
 
 
+# @pytest.mark.skipif(sys.platform != 'linux', reason="CI doesn't support MacOS and Windows")
 def test_node_manager(tmp_path: Path, ray_cluster):
     # TODO py-test clean-ups
     timeout = 1200
@@ -43,7 +45,20 @@ def test_node_manager(tmp_path: Path, ray_cluster):
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
     )  # +1 for the head node
 
+    def wait_for_append_nodes(num, max_wait_time=50, output_fn=True):
+        start_time = time.time()
+        while True:
+            results = manager.run_cmd("whoami", timeout=timeout)
+            if time.time() - start_time > max_wait_time:
+                raise RuntimeError("Timed out waiting for append nodes.")
+            if output_fn:
+                print(results)
+            if len(results) > num:
+                break
+            time.sleep(0.1)
+
     ray_cluster.append_nodes(1)
+    wait_for_append_nodes(1)
     n_nodes += 1
     results = manager.run_cmd("whoami", timeout=timeout)
     # reultes {node_ip: node_username, ...}
@@ -76,7 +91,6 @@ def test_node_manager(tmp_path: Path, ray_cluster):
     ray_cluster.kill_all()
     results = manager.run_cmd("whoami", timeout=timeout)
     assert len(results) == 1  # the head node
-
 
 def assert_resources_equal(
     resource_one: dict[str, Resource], resource_two: dict[str, Resource]
