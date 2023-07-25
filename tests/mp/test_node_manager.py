@@ -22,8 +22,6 @@ def test_node_manager(tmp_path: Path, ray_cluster):
     assert len(test_ips) == 0
 
     results = manager.run_cmd("whoami", timeout=timeout)
-    # reultes {node_ip: node_username, ...}
-    print(results)
 
     assert (
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
@@ -53,16 +51,15 @@ def test_node_manager(tmp_path: Path, ray_cluster):
                 raise RuntimeError("Timed out waiting for append nodes.")
             if output_fn:
                 print(results)
+                print(ray_cluster.node_ips())
             if len(results) > num:
-                break
+                return results
             time.sleep(0.1)
 
     ray_cluster.append_nodes(1)
-    wait_for_append_nodes(1)
+    results = wait_for_append_nodes(1)
     n_nodes += 1
-    results = manager.run_cmd("whoami", timeout=timeout)
     # reultes {node_ip: node_username, ...}
-    print(results)
     assert (
         len(results) == len(ray_cluster.node_ips()) and len(results) == n_nodes + 1
     )  # +1 for the head node
