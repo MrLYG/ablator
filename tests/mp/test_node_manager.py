@@ -64,7 +64,7 @@ def test_node_manager(tmp_path: Path, ray_cluster):
                 raise RuntimeError("Timed out deleting for nodes.")
             if output_fn:
                 print(node_ips)
-            if len(results) == num:
+            if len(node_ips) == num:
                 break
             time.sleep(0.1)
 
